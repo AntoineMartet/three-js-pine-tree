@@ -75,8 +75,8 @@ const loop = () => {
     window.requestAnimationFrame(loop)
     lightAbove.position.y = 30 * Math.cos(y) - 20
     lightAbove.position.z = 30 * Math.sin(z)
-    y += 3/365
-    z += 3/365
+    y += 5/365
+    z += 5/365
 }
 loop()
 /*----------------------------------------------------------------------
@@ -137,28 +137,33 @@ function tronCreation(x, z){
 }
 //creation d un sapin
 function triangleCreation(size, y, x, z){
-    const geometry = new THREE.ConeGeometry(size, 3, 10)
+    const geometry = new THREE.ConeGeometry(size, 3, 20)
     const material = new THREE.MeshStandardMaterial({ color: 0x032CD32})
     const triangle = new THREE.Mesh( geometry, material)
     triangle.position.y = y
     triangle.position.x = x
     triangle.position.z = z
     // couleurs bordures
+    /*
     const wireframeGeometry = new THREE.WireframeGeometry(geometry);
     const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x0ADFF2F });
     const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
     triangle.add(wireframe);
+     */
     scene.add(triangle);
+
 }
 // boule violette
 const buttonGeometry = new THREE.IcosahedronGeometry(2)
 const buttonMaterial = new THREE.MeshStandardMaterial({ color: 0x845EC2})
 const button = new THREE.Mesh(buttonGeometry, buttonMaterial)
+/*
 const wireframeGeoBt = new THREE.WireframeGeometry(buttonGeometry);
 const wireframeMatBt = new THREE.LineBasicMaterial({ color: 0xffffff });
 const wireframeBt = new THREE.LineSegments(wireframeGeoBt, wireframeMatBt);
-button.position.y = 6.3
 button.add(wireframeBt)
+ */
+button.position.y = 6.3
 scene.add(button)
 
 /*----------------------------------------------------------------------
