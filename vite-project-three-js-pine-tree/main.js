@@ -49,39 +49,40 @@ window.addEventListener('resize', () => {
 ----------------------------------------------------------------------*/
 
 //Light
-const lightAbove = new THREE.PointLight(0xffffff, 400, 100, 2)
+let lightAbove = new THREE.PointLight(0xffaaaa, 500, 100, 2)
 lightAbove.position.set(0, 10, 3) // droite, haut, vers nous
 scene.add(lightAbove)
 
-const lightBelow = new THREE.PointLight(0xffffff, 400, 100, 2.5)
-lightBelow.position.set(0, -20, 3) // droite, haut, vers nous
-scene.add(lightBelow)
-
-const lightBelow2 = new THREE.PointLight(0xffffff, 300, 100, 2.5)
-lightBelow2.position.set(0, -20, -3) // droite, haut, vers nous
-scene.add(lightBelow2)
+const lightDim = new THREE.PointLight(0x5555ff, 400, 100, 2)
+lightDim.position.set(0, 20, 3) // droite, haut, vers nous
+scene.add(lightDim)
 
 //Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
-controls.enablePan = false // right click to translate the scene
-controls.enableZoom = false // wheel to zoom in and out the scene
+controls.enablePan = true // right click to translate the scene
+controls.enableZoom = true // wheel to zoom in and out the scene
 controls.enableRotate = true // left click to rotate the scene
-controls.autoRotate = true
-controls.autoRotateSpeed = 4
+controls.autoRotate = false
+//controls.autoRotateSpeed = 4
 
+let y = 0;
+let z = 0;
 //Update canvas regularly
 const loop = () => {
     controls.update()
     renderer.render(scene, camera)
     window.requestAnimationFrame(loop)
+    lightAbove.position.y = 30 * Math.cos(y) - 20
+    lightAbove.position.z = 30 * Math.sin(z)
+    y += 3/365
+    z += 3/365
 }
 loop()
 /*----------------------------------------------------------------------
                        Scene - Geometries
 ----------------------------------------------------------------------*/
 
-//Create our sphere
 const cone1 = new THREE.ConeGeometry(3, 6, 64, 8)
 const material1 = new THREE.MeshStandardMaterial({
     color: "#00ff83",
@@ -109,10 +110,10 @@ const mesh4 = new THREE.Mesh(cylinder1, material2)
 mesh4.position.set(0, -10, 0)
 scene.add(mesh4)
 
-function createPineTree(nb) {
-
-}
-
+const sphere1 = new THREE.SphereGeometry(10, 64, 64)
+const mesh5 = new THREE.Mesh(sphere1, material1)
+mesh5.position.set(0, -20, 0)
+scene.add(mesh5)
 /*----------------------------------------------------------------------
                        Scene - Animations
 ----------------------------------------------------------------------*/
