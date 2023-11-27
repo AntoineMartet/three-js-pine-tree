@@ -83,37 +83,84 @@ loop()
                        Scene - Geometries
 ----------------------------------------------------------------------*/
 
-const cone1 = new THREE.ConeGeometry(3, 6, 64, 8)
-const material1 = new THREE.MeshStandardMaterial({
-    color: "#00ff83",
-    roughness: 0.5
-})
-const mesh1 = new THREE.Mesh(cone1, material1)
-scene.add(mesh1)
+// sun
+const geometrySun = new THREE.CircleGeometry( 30, 32);
+const materialSun = new THREE.MeshStandardMaterial( { color: 0xFF9671 } );
+const sun = new THREE.Mesh( geometrySun, materialSun );
+sun.position.z = -49
+scene.add( sun );
 
-const cone2 = new THREE.ConeGeometry(4, 8, 64, 8)
-const mesh2 = new THREE.Mesh(cone2, material1)
-mesh2.position.set(0, -2, 0)
-scene.add(mesh2)
+// background
+const geometryBackground = new THREE.CircleGeometry( 130, 32);
+const materialBackground = new THREE.MeshStandardMaterial( { color: 0x00BFFF } );
+const background = new THREE.Mesh( geometryBackground, materialBackground );
+background.position.z = -50
+scene.add( background );
 
-const cone3 = new THREE.ConeGeometry(5, 10, 64, 8)
-const mesh3 = new THREE.Mesh(cone3, material1)
-mesh3.position.set(0, -4, 0)
-scene.add(mesh3)
+// le sol
+const geometryGround = new THREE.CircleGeometry( 100, 32);
+const materialGround = new THREE.MeshStandardMaterial( { color: 0xDCDCDC } );
+const ground = new THREE.Mesh( geometryGround, materialGround );
+ground.rotation.x = -Math.PI / 2
+ground.position.y = - 10
+scene.add( ground );
 
-const cylinder1 =  new THREE.CylinderGeometry( 1, 1, 4, 32);
-const material2 = new THREE.MeshStandardMaterial({
-    color: "#cc5500",
-    roughness: 0.5
-})
-const mesh4 = new THREE.Mesh(cylinder1, material2)
-mesh4.position.set(0, -10, 0)
-scene.add(mesh4)
 
-const sphere1 = new THREE.SphereGeometry(10, 64, 64)
-const mesh5 = new THREE.Mesh(sphere1, material1)
-mesh5.position.set(0, -20, 0)
-scene.add(mesh5)
+// boucle qui créé des sapin sur toute la hauteur
+for(let vertical = 0; vertical <= 10; vertical++ ){
+    const posZ = vertical * (-5.5)
+    // boucle qui cree sapihorizontal sur toute la lohorizontalgueur
+    for(let horizontal = 0; horizontal <= 10; horizontal++){
+        const posX = 5.5 * horizontal // partie droite
+        const posXneg = posX * (-1) //partie gauche
+        // creation d'un sapin
+        for(let i = 0; i <= 5; i++){
+            const size = 1 + (0.3 * i) // honnetement je ne me souviens plus pk exactement ce calcul
+            const positionY = -i
+            triangleCreation(size, positionY, posX, posZ)
+            triangleCreation(size, positionY, posXneg, posZ)
+            tronCreation(posX, posZ)
+            tronCreation(posXneg, posZ)
+        }
+    }
+}
+// creation d'un tronc
+function tronCreation(x, z){
+    const geometry = new THREE.CylinderGeometry( 0.7, 0.7, 7, 10 );
+    const material = new THREE.MeshStandardMaterial( {color: 0x0643d08} );
+    const cylinder = new THREE.Mesh( geometry, material );
+    cylinder.position.y = -5
+    cylinder.position.x = x
+    cylinder.position.z = z
+    scene.add( cylinder );
+
+}
+//creation d un sapin
+function triangleCreation(size, y, x, z){
+    const geometry = new THREE.ConeGeometry(size, 3, 10)
+    const material = new THREE.MeshStandardMaterial({ color: 0x032CD32})
+    const triangle = new THREE.Mesh( geometry, material)
+    triangle.position.y = y
+    triangle.position.x = x
+    triangle.position.z = z
+    // couleurs bordures
+    const wireframeGeometry = new THREE.WireframeGeometry(geometry);
+    const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x0ADFF2F });
+    const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
+    triangle.add(wireframe);
+    scene.add(triangle);
+}
+// boule violette
+const buttonGeometry = new THREE.IcosahedronGeometry(2)
+const buttonMaterial = new THREE.MeshStandardMaterial({ color: 0x845EC2})
+const button = new THREE.Mesh(buttonGeometry, buttonMaterial)
+const wireframeGeoBt = new THREE.WireframeGeometry(buttonGeometry);
+const wireframeMatBt = new THREE.LineBasicMaterial({ color: 0xffffff });
+const wireframeBt = new THREE.LineSegments(wireframeGeoBt, wireframeMatBt);
+button.position.y = 6.3
+button.add(wireframeBt)
+scene.add(button)
+
 /*----------------------------------------------------------------------
                        Scene - Animations
 ----------------------------------------------------------------------*/
