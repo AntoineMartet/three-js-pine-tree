@@ -23,7 +23,7 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     200
 )
-camera.position.z = 40
+camera.position.z = 80
 scene.add(camera)
 
 //Renderer
@@ -48,14 +48,20 @@ window.addEventListener('resize', () => {
                        Scene - Controls, Lights, Update
 ----------------------------------------------------------------------*/
 
-//Light
-let lightAbove = new THREE.PointLight(0xffaaaa, 500, 100, 2)
-lightAbove.position.set(0, 30, 3) // droite, haut, vers nous
-scene.add(lightAbove)
+//Main Light (day)
+let dayLight = new THREE.PointLight(0xffaaaa, 500, 100, 2)
+dayLight.position.set(0, 40, 0) // droite, haut, vers nous
+scene.add(dayLight)
 
-const lightDim = new THREE.PointLight(0x5555ff, 400, 100, 2)
-lightDim.position.set(0, 40, 3) // droite, haut, vers nous
-scene.add(lightDim)
+//Blue Light above (night)
+const nightLightAbove = new THREE.PointLight(0x5555ff, 400, 100, 2)
+nightLightAbove.position.set(0, 40, 0) // droite, haut, vers nous
+scene.add(nightLightAbove)
+
+//Blue Light below (night)
+const nightLightBelow = new THREE.PointLight(0x5555ff, 400, 100, 2)
+nightLightBelow.position.set(0, -40, 0) // droite, haut, vers nous
+scene.add(nightLightBelow)
 
 //Controls
 const controls = new OrbitControls(camera, canvas)
@@ -73,10 +79,11 @@ const loop = () => {
     controls.update()
     renderer.render(scene, camera)
     window.requestAnimationFrame(loop)
-    lightAbove.position.y = 30 * Math.cos(y)
-    lightAbove.position.z = 30 * Math.sin(z)
-    y += 3/365
-    z += 3/365
+    dayLight.position.y = 30 * Math.cos(y)
+    dayLight.position.z = 30 * Math.sin(z)
+    y += 3/360
+    z += 3/360
+
 }
 loop()
 
@@ -128,19 +135,19 @@ const material1 = new THREE.MeshStandardMaterial({
     roughness: 0.5
 })
 const mesh1 = new THREE.Mesh(cone1, material1)
-mesh1.position.set(0, 20, 0)
+mesh1.position.set(0, 24, 0)
 scene.add(mesh1)
 
 // Middle pine cone
 const cone2 = new THREE.ConeGeometry(4, 8, 64, 8)
 const mesh2 = new THREE.Mesh(cone2, material1)
-mesh2.position.set(0, 18, 0)
+mesh2.position.set(0, 22, 0)
 scene.add(mesh2)
 
 // Bottom pine cone
 const cone3 = new THREE.ConeGeometry(5, 10, 64, 8)
 const mesh3 = new THREE.Mesh(cone3, material1)
-mesh3.position.set(0, 16, 0)
+mesh3.position.set(0, 20, 0)
 scene.add(mesh3)
 
 // Pine trunk cylinder
@@ -150,11 +157,11 @@ const material2 = new THREE.MeshStandardMaterial({
     roughness: 0.5
 })
 const mesh4 = new THREE.Mesh(cylinder1, material2)
-mesh4.position.set(0, 10, 0)
+mesh4.position.set(0, 14, 0)
 scene.add(mesh4)
 
 // Planet
-const sphere1 = new THREE.SphereGeometry(10, 64, 64)
+const sphere1 = new THREE.SphereGeometry(14, 64, 64)
 const mesh5 = new THREE.Mesh(sphere1, material1)
 mesh5.position.set(0, 0, 0)
 scene.add(mesh5)
