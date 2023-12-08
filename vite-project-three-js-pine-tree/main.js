@@ -124,41 +124,67 @@ const zLineGeometry = new THREE.BufferGeometry().setFromPoints(zLinePoints);
 const zLine = new THREE.Line(zLineGeometry, zLineMaterial);
 scene.add(zLine);
 
+
 /*----------------------------------------------------------------------
-                       Scene - Geometries
+                       Scene - Materials
 ----------------------------------------------------------------------*/
 
-// Top pine cone
-const cone1 = new THREE.ConeGeometry(3, 6, 64, 8)
+// Pines, Planet
 const material1 = new THREE.MeshStandardMaterial({
     color: "#00ff83",
     roughness: 0.5
 })
-const mesh1 = new THREE.Mesh(cone1, material1)
-mesh1.position.set(0, 24, 0)
-scene.add(mesh1)
 
-// Middle pine cone
-const cone2 = new THREE.ConeGeometry(4, 8, 64, 8)
-const mesh2 = new THREE.Mesh(cone2, material1)
-mesh2.position.set(0, 22, 0)
-scene.add(mesh2)
-
-// Bottom pine cone
-const cone3 = new THREE.ConeGeometry(5, 10, 64, 8)
-const mesh3 = new THREE.Mesh(cone3, material1)
-mesh3.position.set(0, 20, 0)
-scene.add(mesh3)
-
-// Pine trunk cylinder
-const cylinder1 =  new THREE.CylinderGeometry( 1, 1, 4, 32);
+// Trunks
 const material2 = new THREE.MeshStandardMaterial({
     color: "#cc5500",
     roughness: 0.5
 })
-const mesh4 = new THREE.Mesh(cylinder1, material2)
-mesh4.position.set(0, 14, 0)
-scene.add(mesh4)
+
+/*----------------------------------------------------------------------
+                       Scene - Geometries
+----------------------------------------------------------------------*/
+/*
+// Top pine cone
+const pine1cone1 = new THREE.ConeGeometry(3, 6, 64, 8)
+
+const pine1mesh1 = new THREE.Mesh(pine1cone1, material1)
+pine1mesh1.position.set(0, 24, 0)
+scene.add(pine1mesh1)
+
+// Middle pine cone
+const pine1cone2 = new THREE.ConeGeometry(4, 8, 64, 8)
+const pine1mesh2 = new THREE.Mesh(pine1cone2, material1)
+pine1mesh2.position.set(0, 22, 0)
+scene.add(pine1mesh2)
+
+// Bottom pine cone
+const pine1cone3 = new THREE.ConeGeometry(5, 10, 64, 8)
+const pine1mesh3 = new THREE.Mesh(pine1cone3, material1)
+pine1mesh3.position.set(0, 20, 0)
+scene.add(pine1mesh3)
+
+// Pine trunk cylinder
+const pine1cylinder =  new THREE.CylinderGeometry( 1, 1, 4, 32);
+const pine1cylinderMesh = new THREE.Mesh(pine1cylinder, material2)
+pine1cylinderMesh.position.set(0, 14, 0)
+scene.add(pine1cylinderMesh)
+*/
+
+const pine1group = createPineGroup(material1, material2);
+pine1group.position.set(0, 0, 0);
+pine1group.rotation.set(0, 0, 0);
+scene.add(pine1group);
+
+const pine2group = createPineGroup(material1, material2);
+pine2group.position.set(0, 0, 0);
+pine2group.rotation.set(0, 0, Math.PI/2);
+scene.add(pine2group);
+
+const pine3group = createPineGroup(material1, material2);
+pine3group.position.set(0, 0, 0);
+pine3group.rotation.set(0, 0, -Math.PI/2);
+scene.add(pine3group);
 
 // Planet
 const sphere1 = new THREE.SphereGeometry(14, 64, 64)
@@ -172,9 +198,46 @@ scene.add(mesh5)
 
 //gsap timeline, for a series of multiple animations
 const tl = gsap.timeline({defaults: { duration: 0.5}})
-tl.fromTo(mesh4.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1})
-tl.fromTo(mesh3.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1})
-tl.fromTo(mesh2.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1})
-tl.fromTo(mesh1.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1})
+pine1group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, index * 0.5);
+});
+pine2group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 2 + index * 0.5);
+});
+pine3group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 4 + index * 0.5);
+});
 tl.fromTo("nav", {y: "-100%"}, {y: "0%"})
 tl.fromTo(".title", {opacity:0, rotation:0}, {opacity:1, rotation:720})
+
+
+function createPineGroup(material1, material2) {
+    // Top pine cone
+    const cone1 = new THREE.ConeGeometry(3, 6, 64, 8)
+    const mesh1 = new THREE.Mesh(cone1, material1)
+    mesh1.position.set(0, 24, 0)
+
+    // Middle pine cone
+    const cone2 = new THREE.ConeGeometry(4, 8, 64, 8)
+    const mesh2 = new THREE.Mesh(cone2, material1)
+    mesh2.position.set(0, 22, 0)
+
+    // Bottom pine cone
+    const cone3 = new THREE.ConeGeometry(5, 10, 64, 8)
+    const mesh3 = new THREE.Mesh(cone3, material1)
+    mesh3.position.set(0, 20, 0)
+
+    // Pine trunk cylinder
+    const cylinder =  new THREE.CylinderGeometry( 1, 1, 4, 32);
+    const cylinderMesh = new THREE.Mesh(cylinder, material2)
+    cylinderMesh.position.set(0, 14, 0)
+
+    // Creation of a group
+    const group = new THREE.Group();
+    group.add(cylinderMesh);
+    group.add(mesh3);
+    group.add(mesh2);
+    group.add(mesh1);
+
+    return group;
+}
