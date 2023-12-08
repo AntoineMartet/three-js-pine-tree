@@ -20,7 +20,7 @@ const camera = new THREE.PerspectiveCamera(
     45,
     sizes.width/sizes.height,
     0.1,
-    200
+    10000
 )
 camera.position.z = 80
 scene.add(camera)
@@ -48,7 +48,7 @@ window.addEventListener('resize', () => {
 ----------------------------------------------------------------------*/
 
 //Main Light (day)
-let dayLight = new THREE.PointLight(0xccccaa, 500, 100, 1.6)
+let dayLight = new THREE.PointLight(0xccccaa, 6500, 100, 1.7)
 dayLight.position.set(0, 40, 0) // droite, haut, vers nous
 scene.add(dayLight)
 
@@ -70,21 +70,6 @@ controls.enableZoom = true // wheel to zoom in and out the scene
 controls.enableRotate = true // left click to rotate the scene
 controls.autoRotate = false
 //controls.autoRotateSpeed = 4
-
-let y = 0;
-let z = 0;
-//Update canvas regularly
-const loop = () => {
-    controls.update()
-    renderer.render(scene, camera)
-    window.requestAnimationFrame(loop)
-    dayLight.position.y = 40 * Math.cos(y)
-    dayLight.position.z = 40 * Math.sin(z)
-    y += 3/360
-    z += 3/360
-
-}
-loop()
 
 /*----------------------------------------------------------------------
                        Scene - Coordinates
@@ -147,8 +132,8 @@ const material3 = new THREE.MeshStandardMaterial({
 })
 
 // Sun
-const material4 = new THREE.MeshStandardMaterial({
-    color: "#ffffff",
+const material4 = new THREE.MeshBasicMaterial({
+    color: "#ffffaa",
     roughness: 0.5
 })
 
@@ -193,13 +178,15 @@ mesh5.position.set(0, 0, 0)
 scene.add(mesh5)
 
 // Sun
-const sunSphere = new THREE.SphereGeometry(3, 64, 64)
+const sunSphere = new THREE.SphereGeometry(50, 64, 64)
 const sunMesh = new THREE.Mesh(sunSphere, material4)
 sunMesh.position.set(0, 0, 0)
+sunMesh.emissive = new THREE.Color("#ffffff")
+sunMesh.emissiveIntensity = 1000
 scene.add(sunMesh)
 
 /*----------------------------------------------------------------------
-                       Scene - Animations
+                       Scene - GSAP animations
 ----------------------------------------------------------------------*/
 
 //gsap timeline, for a series of multiple animations
@@ -225,6 +212,25 @@ pine6group.children.forEach((mesh, index) => {
 tl.fromTo("nav", {y: "-100%"}, {y: "0%"})
 tl.fromTo(".title", {opacity:0, rotation:0}, {opacity:1, rotation:720})
 
+/*----------------------------------------------------------------------
+                       Scene - Update, JS animations
+----------------------------------------------------------------------*/
+
+let y = 0;
+let z = 0;
+//Update canvas regularly
+const loop = () => {
+    controls.update()
+    renderer.render(scene, camera)
+    window.requestAnimationFrame(loop)
+    dayLight.position.y = 80 * Math.cos(y)
+    dayLight.position.z = 80 * Math.sin(z)
+    sunMesh.position.y = 500 * Math.cos(y)
+    sunMesh.position.z = 500 * Math.sin(z)
+    y += 1/360
+    z += 1/360
+}
+loop()
 
 function createPineGroup(material1, material2) {
     // Top pine cone
