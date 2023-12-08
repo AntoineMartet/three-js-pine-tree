@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import "./style.css"
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import gsap from "gsap"
-
 /*----------------------------------------------------------------------
             Scene - Camera, renderer, size, resize, loop
 ----------------------------------------------------------------------*/
@@ -49,17 +48,17 @@ window.addEventListener('resize', () => {
 ----------------------------------------------------------------------*/
 
 //Main Light (day)
-let dayLight = new THREE.PointLight(0xffaaaa, 500, 100, 2)
+let dayLight = new THREE.PointLight(0xccccaa, 500, 100, 1.6)
 dayLight.position.set(0, 40, 0) // droite, haut, vers nous
 scene.add(dayLight)
 
 //Blue Light above (night)
-const nightLightAbove = new THREE.PointLight(0x5555ff, 400, 100, 2)
+const nightLightAbove = new THREE.PointLight(0x8855aa, 400, 100, 1.8)
 nightLightAbove.position.set(0, 40, 0) // droite, haut, vers nous
 scene.add(nightLightAbove)
 
 //Blue Light below (night)
-const nightLightBelow = new THREE.PointLight(0x5555ff, 400, 100, 2)
+const nightLightBelow = new THREE.PointLight(0x8855aa, 400, 100, 1.8)
 nightLightBelow.position.set(0, -40, 0) // droite, haut, vers nous
 scene.add(nightLightBelow)
 
@@ -79,8 +78,8 @@ const loop = () => {
     controls.update()
     renderer.render(scene, camera)
     window.requestAnimationFrame(loop)
-    dayLight.position.y = 30 * Math.cos(y)
-    dayLight.position.z = 30 * Math.sin(z)
+    dayLight.position.y = 40 * Math.cos(y)
+    dayLight.position.z = 40 * Math.sin(z)
     y += 3/360
     z += 3/360
 
@@ -129,7 +128,7 @@ scene.add(zLine);
                        Scene - Materials
 ----------------------------------------------------------------------*/
 
-// Pines, Planet
+// Pines
 const material1 = new THREE.MeshStandardMaterial({
     color: "#00ff83",
     roughness: 0.5
@@ -141,35 +140,21 @@ const material2 = new THREE.MeshStandardMaterial({
     roughness: 0.5
 })
 
+// Planet
+const material3 = new THREE.MeshStandardMaterial({
+    color: "#00ff83",
+    roughness: 0.5
+})
+
+// Sun
+const material4 = new THREE.MeshStandardMaterial({
+    color: "#ffffff",
+    roughness: 0.5
+})
+
 /*----------------------------------------------------------------------
                        Scene - Geometries
 ----------------------------------------------------------------------*/
-/*
-// Top pine cone
-const pine1cone1 = new THREE.ConeGeometry(3, 6, 64, 8)
-
-const pine1mesh1 = new THREE.Mesh(pine1cone1, material1)
-pine1mesh1.position.set(0, 24, 0)
-scene.add(pine1mesh1)
-
-// Middle pine cone
-const pine1cone2 = new THREE.ConeGeometry(4, 8, 64, 8)
-const pine1mesh2 = new THREE.Mesh(pine1cone2, material1)
-pine1mesh2.position.set(0, 22, 0)
-scene.add(pine1mesh2)
-
-// Bottom pine cone
-const pine1cone3 = new THREE.ConeGeometry(5, 10, 64, 8)
-const pine1mesh3 = new THREE.Mesh(pine1cone3, material1)
-pine1mesh3.position.set(0, 20, 0)
-scene.add(pine1mesh3)
-
-// Pine trunk cylinder
-const pine1cylinder =  new THREE.CylinderGeometry( 1, 1, 4, 32);
-const pine1cylinderMesh = new THREE.Mesh(pine1cylinder, material2)
-pine1cylinderMesh.position.set(0, 14, 0)
-scene.add(pine1cylinderMesh)
-*/
 
 const pine1group = createPineGroup(material1, material2);
 pine1group.position.set(0, 0, 0);
@@ -183,14 +168,35 @@ scene.add(pine2group);
 
 const pine3group = createPineGroup(material1, material2);
 pine3group.position.set(0, 0, 0);
-pine3group.rotation.set(0, 0, -Math.PI/2);
+pine3group.rotation.set(0, 0, Math.PI);
 scene.add(pine3group);
+
+const pine4group = createPineGroup(material1, material2);
+pine4group.position.set(0, 0, 0);
+pine4group.rotation.set(0, 0, Math.PI*3/2);
+scene.add(pine4group);
+
+const pine5group = createPineGroup(material1, material2);
+pine5group.position.set(0, 0, 0);
+pine5group.rotation.set(-Math.PI/2, 0, 0);
+scene.add(pine5group);
+
+const pine6group = createPineGroup(material1, material2);
+pine6group.position.set(0, 0, 0);
+pine6group.rotation.set(Math.PI/2, 0, 0);
+scene.add(pine6group);
 
 // Planet
 const sphere1 = new THREE.SphereGeometry(14, 64, 64)
-const mesh5 = new THREE.Mesh(sphere1, material1)
+const mesh5 = new THREE.Mesh(sphere1, material3)
 mesh5.position.set(0, 0, 0)
 scene.add(mesh5)
+
+// Sun
+const sunSphere = new THREE.SphereGeometry(3, 64, 64)
+const sunMesh = new THREE.Mesh(sunSphere, material4)
+sunMesh.position.set(0, 0, 0)
+scene.add(sunMesh)
 
 /*----------------------------------------------------------------------
                        Scene - Animations
@@ -199,13 +205,22 @@ scene.add(mesh5)
 //gsap timeline, for a series of multiple animations
 const tl = gsap.timeline({defaults: { duration: 0.5}})
 pine1group.children.forEach((mesh, index) => {
-    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, index * 0.5);
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, index * 0.25);
 });
 pine2group.children.forEach((mesh, index) => {
-    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 2 + index * 0.5);
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 1 + index * 0.25);
 });
 pine3group.children.forEach((mesh, index) => {
-    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 4 + index * 0.5);
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 2 + index * 0.25);
+});
+pine4group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 3 + index * 0.25);
+});
+pine5group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 4 + index * 0.25);
+});
+pine6group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 5 + index * 0.25);
 });
 tl.fromTo("nav", {y: "-100%"}, {y: "0%"})
 tl.fromTo(".title", {opacity:0, rotation:0}, {opacity:1, rotation:720})
@@ -215,17 +230,17 @@ function createPineGroup(material1, material2) {
     // Top pine cone
     const cone1 = new THREE.ConeGeometry(3, 6, 64, 8)
     const mesh1 = new THREE.Mesh(cone1, material1)
-    mesh1.position.set(0, 24, 0)
+    mesh1.position.set(0, 25, 0)
 
     // Middle pine cone
     const cone2 = new THREE.ConeGeometry(4, 8, 64, 8)
     const mesh2 = new THREE.Mesh(cone2, material1)
-    mesh2.position.set(0, 22, 0)
+    mesh2.position.set(0, 23, 0)
 
     // Bottom pine cone
     const cone3 = new THREE.ConeGeometry(5, 10, 64, 8)
     const mesh3 = new THREE.Mesh(cone3, material1)
-    mesh3.position.set(0, 20, 0)
+    mesh3.position.set(0, 21, 0)
 
     // Pine trunk cylinder
     const cylinder =  new THREE.CylinderGeometry( 1, 1, 4, 32);
