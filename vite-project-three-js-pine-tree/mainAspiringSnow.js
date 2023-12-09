@@ -22,7 +22,7 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     10000
 )
-camera.position.z = 100
+camera.position.z = 80
 scene.add(camera)
 
 //Renderer
@@ -69,12 +69,12 @@ controls.enablePan = true // right click to translate the scene
 controls.enableZoom = true // wheel to zoom in and out the scene
 controls.enableRotate = true // left click to rotate the scene
 controls.autoRotate = false
-controls.autoRotateSpeed = 0.5
+//controls.autoRotateSpeed = 4
 
 /*----------------------------------------------------------------------
                        Scene - Coordinates
 ----------------------------------------------------------------------*/
-/*
+
 // x line
 const xLinePoints = [];
 xLinePoints.push( new THREE.Vector3( 0, 0, 0 ) );
@@ -107,7 +107,7 @@ const zLineMaterial = new THREE.LineBasicMaterial({
 const zLineGeometry = new THREE.BufferGeometry().setFromPoints(zLinePoints);
 const zLine = new THREE.Line(zLineGeometry, zLineMaterial);
 scene.add(zLine);
-*/
+
 
 /*----------------------------------------------------------------------
                        Scene - Materials
@@ -178,65 +178,6 @@ pine6group.position.set(0, 0, 0);
 pine6group.rotation.set(Math.PI/2, 0, 0);
 scene.add(pine6group);
 
-// Diagonal pines above
-const pine7group = createPineGroup(material1, material2);
-pine7group.position.set(0, 0, 0);
-pine7group.rotation.set(0, Math.PI/4, Math.PI/4);
-scene.add(pine7group);
-
-const pine8group = createPineGroup(material1, material2);
-pine8group.position.set(0, 0, 0);
-pine8group.rotation.set(0, Math.PI*3/4, Math.PI/4);
-scene.add(pine8group);
-
-const pine9group = createPineGroup(material1, material2);
-pine9group.position.set(0, 0, 0);
-pine9group.rotation.set(0, -Math.PI*3/4, Math.PI/4);
-scene.add(pine9group);
-
-const pine10group = createPineGroup(material1, material2);
-pine10group.position.set(0, 0, 0);
-pine10group.rotation.set(0, -Math.PI/4, Math.PI/4);
-scene.add(pine10group);
-
-// Diagonal pines below
-const pine11group = createPineGroup(material1, material2);
-pine11group.position.set(0, 0, 0);
-pine11group.rotation.set(0, Math.PI/4, Math.PI*3/4);
-scene.add(pine11group);
-
-const pine12group = createPineGroup(material1, material2);
-pine12group.position.set(0, 0, 0);
-pine12group.rotation.set(0, Math.PI*3/4, Math.PI*3/4);
-scene.add(pine12group);
-
-const pine13group = createPineGroup(material1, material2);
-pine13group.position.set(0, 0, 0);
-pine13group.rotation.set(0, -Math.PI*3/4, Math.PI*3/4);
-scene.add(pine13group);
-
-const pine14group = createPineGroup(material1, material2);
-pine14group.position.set(0, 0, 0);
-pine14group.rotation.set(0, -Math.PI/4, Math.PI*3/4);
-scene.add(pine14group);
-
-// Array of pine groups for GSAP animation
-const pineGroups = [];
-pineGroups.push(pine1group);
-pineGroups.push(pine2group);
-pineGroups.push(pine3group);
-pineGroups.push(pine4group);
-pineGroups.push(pine5group);
-pineGroups.push(pine6group);
-pineGroups.push(pine7group);
-pineGroups.push(pine8group);
-pineGroups.push(pine9group);
-pineGroups.push(pine10group);
-pineGroups.push(pine11group);
-pineGroups.push(pine12group);
-pineGroups.push(pine13group);
-pineGroups.push(pine14group);
-
 // Planet
 const sphere1 = new THREE.SphereGeometry(14, 64, 64)
 const mesh5 = new THREE.Mesh(sphere1, material3)
@@ -265,14 +206,39 @@ for(let i = 0; i < 500; i++) {
 
 //gsap timeline, for a series of multiple animations
 const tl = gsap.timeline({defaults: { duration: 0.5}})
-tl.fromTo(mesh5.scale, {x:0, y:0, z:0}, {x:1, y:1, z:1});
-pineGroups.forEach((group, groupIndex) => {
-    group.children.forEach((mesh, index) => {
-        tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1, y:1, z:1}, groupIndex*0.4 + index*0.7);
-    });
+pine1group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, index * 0.25);
+});
+pine2group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 1 + index * 0.25);
+});
+pine3group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 2 + index * 0.25);
+});
+pine4group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 3 + index * 0.25);
+});
+pine5group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 4 + index * 0.25);
+});
+pine6group.children.forEach((mesh, index) => {
+    tl.fromTo(mesh.scale, {x:0, y:0, z:0}, {x:1.0, y:1, z:1}, 5 + index * 0.25);
 });
 tl.fromTo("nav", {y: "-100%"}, {y: "0%"})
 tl.fromTo(".title", {opacity:0, rotation:0}, {opacity:1, rotation:720})
+
+const tlSnow = gsap.timeline();
+
+// Add a tween for each snowflake in the snowMeshes array
+snowMeshes.forEach((snowMesh) => {
+    tlSnow.to(snowMesh.position, {
+        x: 0,
+        y: 0,
+        z: 0,
+        duration: 0.1, // Adjust duration as needed
+        ease: "power1.in" // Adjust easing as needed
+    });
+});
 
 /*----------------------------------------------------------------------
                        Scene - Update, JS animations
@@ -291,15 +257,15 @@ const loop = () => {
     sunMesh.position.z = 500 * Math.sin(z)
     y += 1/360
     z += 1/360
-
+    /*
     for (const snowMesh of snowMeshes) {
         snowMesh.position.y -= 0.1; // Adjust speed as needed
 
         // 4. If a snowMesh falls below a certain y position, reset its y position to the top
-        if (snowMesh.position.y < -150) { // Adjust ground level as needed
-            snowMesh.position.y = 150; // Adjust reset position as needed
+        if (snowMesh.position.y < -100) { // Adjust ground level as needed
+            snowMesh.position.y = 100; // Adjust reset position as needed
         }
-    }
+    }*/
 }
 loop()
 
@@ -337,8 +303,8 @@ function createPineGroup(material1, material2) {
 function createSnowMesh() {
     const snowSphere = new THREE.SphereGeometry(0.3, 64, 64);
     const snowMesh = new THREE.Mesh(snowSphere, material5);
-    snowMesh.position.x = Math.random() * 300 - 150;
-    snowMesh.position.y = Math.random() * 300 - 150;
-    snowMesh.position.z = Math.random() * 300 - 150;
+    snowMesh.position.x = Math.random() * 200 - 100;
+    snowMesh.position.y = Math.random() * 200 - 100;
+    snowMesh.position.z = Math.random() * 200 - 100;
     return snowMesh;
 }
