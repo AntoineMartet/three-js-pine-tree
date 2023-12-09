@@ -137,10 +137,17 @@ const material4 = new THREE.MeshBasicMaterial({
     roughness: 0.5
 })
 
+// Snow
+const material5 = new THREE.MeshBasicMaterial({
+    color: "#ffffff",
+    roughness: 0.5
+})
+
 /*----------------------------------------------------------------------
                        Scene - Geometries
 ----------------------------------------------------------------------*/
 
+// Pines
 const pine1group = createPineGroup(material1, material2);
 pine1group.position.set(0, 0, 0);
 pine1group.rotation.set(0, 0, 0);
@@ -181,9 +188,17 @@ scene.add(mesh5)
 const sunSphere = new THREE.SphereGeometry(50, 64, 64)
 const sunMesh = new THREE.Mesh(sunSphere, material4)
 sunMesh.position.set(0, 0, 0)
-sunMesh.emissive = new THREE.Color("#ffffff")
-sunMesh.emissiveIntensity = 1000
 scene.add(sunMesh)
+
+// 1. Create an array to store all the snowMesh objects
+const snowMeshes = [];
+
+// 2. When creating each snowMesh, add it to the array
+for(let i = 0; i < 500; i++) {
+    const snowMesh = createSnowMesh();
+    scene.add(snowMesh);
+    snowMeshes.push(snowMesh); // Add the snowMesh to the array
+}
 
 /*----------------------------------------------------------------------
                        Scene - GSAP animations
@@ -229,6 +244,14 @@ const loop = () => {
     sunMesh.position.z = 500 * Math.sin(z)
     y += 1/360
     z += 1/360
+    for (const snowMesh of snowMeshes) {
+        snowMesh.position.y -= 0.1; // Adjust speed as needed
+
+        // 4. If a snowMesh falls below a certain y position, reset its y position to the top
+        if (snowMesh.position.y < -100) { // Adjust ground level as needed
+            snowMesh.position.y = 100; // Adjust reset position as needed
+        }
+    }
 }
 loop()
 
@@ -261,4 +284,13 @@ function createPineGroup(material1, material2) {
     group.add(mesh1);
 
     return group;
+}
+
+function createSnowMesh() {
+    const snowSphere = new THREE.SphereGeometry(0.3, 64, 64);
+    const snowMesh = new THREE.Mesh(snowSphere, material5);
+    snowMesh.position.x = Math.random() * 200 - 100;
+    snowMesh.position.y = Math.random() * 200 - 100;
+    snowMesh.position.z = Math.random() * 200 - 100;
+    return snowMesh;
 }
